@@ -1,0 +1,24 @@
+
+source set-my-classpath.sh
+
+#in the CRAN DATASET FOLDER
+find cran -iname \*.html | java it.unimi.di.big.mg4j.document.FileSetDocumentCollection -f HtmlDocumentFactory -p encoding=UTF-8 cran-collection
+java it.unimi.di.big.mg4j.tool.IndexBuilder -t homework.EnglishStemmerStopwords -S cran-collection cran #--downcase
+
+#java it.unimi.di.big.mg4j.query.Query -h -i FileSystemItem -c cran-collection cran-text cran-title
+
+#in the DATASET folder
+java homework.RunAllQueries_HW cran "Queries/cran_all_queries.tsv" "CountScorer" "text_and_title" output.ts
+
+### R-Precision ### 
+# R-Precision requires knowing all documents that are relevant to a query. The number of relevant documents, R, is used as the cutoff for calculation, and this varies from query to query.
+# For example, it there are 15 documents relevant to "red" in a corpus (R=15), R-precision for "red" looks at the top 15 documents returned, counts the number that are relevant `r' turns that into a relevancy franction r/R = r/15
+# Precision is equal to recall at the R-th position.
+# Empirically, this measure is often highly correlated to mean average precision.
+
+# from: en.wikipedia.org/wiki/Information_retrieval
+
+# Summarizing: In order to calculate the R-Precision of a query, we have to perform it, grub the results, check how many doc_ids, r, of the first R are returned that are in the in the R doc_ids that we know a priori.
+# In order to calculate the ``Average R-Precision'', I THINK, we have to do the average upon all the R-Precision calculated on all the Q queries:
+# i.e. 1/Q * \sum_i{RP_i}
+
